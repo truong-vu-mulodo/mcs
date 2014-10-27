@@ -1,4 +1,0 @@
-mcs
-===
-
-Mini Comment System
