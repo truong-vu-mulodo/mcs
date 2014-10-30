@@ -10,6 +10,8 @@ use Fuel\Core\Model;
  *
  * @package  app
  * @extends  Model
+ * @author Vu Truong
+ * @since 2014/10/30
  */
 class User extends Model {
 
@@ -49,7 +51,6 @@ class User extends Model {
 			
 			// Execute the query and return a new Database_MySQLi_Result
 			$result = $query->execute();
-// 			var_dump($result);
 
 			// Return new record's id
 			return $result[0];
