@@ -84,7 +84,7 @@ class Controller_V1_User extends Controller_V1_Base {
 		try {
 			// Create a new validation instance
 			$val = Validation::forge('user');
-	
+
 			// Set rules for input fields
 			$val->add_field('username', 'Username', 'required|trim|valid_string[alpha,lowercase,numeric]');
 			$val->add_field('password', 'Password', 'required|trim|valid_string[alpha,lowercase,numeric]');
