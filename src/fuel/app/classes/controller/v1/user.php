@@ -28,34 +28,28 @@ class Controller_V1_User extends Controller_Rest {
 	public function post_create() {
 		
 		// TODO: Validate input data
-		// Create a new validation instance
-		$val = Validation::forge('user');
-		
-		// Set rules for input fields
-		$val->add_field('username', 'Username', 'required|trim|valid_string[alpha,lowercase,numeric]');
-		$val->add_field('password', 'Password', 'required|trim|valid_string[alpha,lowercase,numeric]');
-		$val->add_field('firstname', 'First name', 'required');
-		$val->add_field('lastname', 'Last name', 'required');
-		$val->add_field('email', 'Email', 'required|trim|valid_email');
-		
-		// Run validation on POST, if failed
-		if (!$val->run()) {
-			// Set error code and message
-			$code = _ERROR_CODE_VALIDATE_FAILED_;
-			// Get default FuelPHP error messages
-			$message = $val->show_errors();
+		$validate_result = $this->validate_input();
 
-			// Return the validation result
-			return $this->response(
-				array(
-					'meta' => array('code' => $code, 'message' => $message),
+		// If validate failed, return errors
+		if ($validate_result !== true) {
+			return $this->response($validate_result);
+		}
+
+		// TODO: Check account existed
+		if (User::is_existed(Input::post('username'))) {
+			// Set error message
+			$errors = array('message' => 'This username is already in used.');
+			// Return error
+			return array(
+					'meta' => array(
+							'code' => _USERNAME_EXISTED_CODE_,
+							'description' => "Account existed.",
+							'messages' => $errors
+					),
 					'data' => null
-				)
 			);
 		}
-			
-		// TODO: Check account existed
-
+		
 		// TODO: Insert new account
 		$user_id = User::create_acount(
 				array(
@@ -71,6 +65,53 @@ class Controller_V1_User extends Controller_Rest {
 		// TODO: Update token to user table
 		
 		// Return created user id (record id)
-		return $this->response(array('user_id' => $user_id));
+		return $this->response(array('user_id' => null));
 	}
+	
+	/**
+	 * Validate input data.
+	 * 
+	 * @return array Error data including error message list
+	 */
+	private function validate_input() {
+		// Create a new validation instance
+		$val = Validation::forge('user');
+		
+		// Set rules for input fields
+		$val->add_field('username', 'Username', 'required|trim|valid_string[alpha,lowercase,numeric]');
+		$val->add_field('password', 'Password', 'required|trim|valid_string[alpha,lowercase,numeric]');
+		$val->add_field('firstname', 'First name', 'required');
+		$val->add_field('lastname', 'Last name', 'required');
+		$val->add_field('email', 'Email', 'required|trim|valid_email');
+		
+		// Overwrite the default rule error messages
+		$val->set_message('required', _DATA_REQUIRED_MSG_);
+		$val->set_message('valid_string', _DATA_INVALID_MSG_.' Only lowercase alphanumeric is accepted.');
+		$val->set_message('valid_email', _DATA_INVALID_MSG_);
+		
+		// Run validation on POST, if failed
+		if (!$val->run()) {
+			// Create the error message list
+			$errors = array();
+			foreach ($val->error() as $field => $error) {
+				$errors[] = array(
+						'message' => $error->get_message()
+				);
+		
+			}
+			// Return errors
+			return array(
+						'meta' => array(
+								'code' => _VALIDATE_FAILED_CODE_,
+								'description' => "Input validation failed.",
+								'messages' => $errors
+						),
+						'data' => null
+					);
+
+		}
+		// Validated OK
+		return true;
+	}
+
 }

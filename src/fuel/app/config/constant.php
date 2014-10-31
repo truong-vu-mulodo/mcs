@@ -9,5 +9,14 @@
  * 
  */
 
+// ### Error Codes ###
 // Input validation
-define('_ERROR_CODE_VALIDATE_FAILED_', '1001');
+define('_VALIDATE_FAILED_CODE_', '1001');
+
+// Data exist
+define('_USERNAME_EXISTED_CODE_', '2001');
+
+// ### Error Messages ###
+// Validation error messages
+define('_DATA_REQUIRED_MSG_', ':label is required.');
+define('_DATA_INVALID_MSG_', ':label is invalid.');
