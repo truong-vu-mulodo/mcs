@@ -3,6 +3,7 @@
 
 // use Fuel\Core\Controller_Rest;
 use \Model\V1\User;
+
 /**
  * The User Controller version v1.
  *
@@ -27,7 +28,7 @@ class Controller_V1_User extends Controller_V1_Base {
 	 */
 	public function post_create() {
 		try {
-			// TODO: Validate input data
+			// Validate input data
 			$validate_result = $this->validate_input();
 			
 			// If validate failed, return errors
@@ -35,7 +36,7 @@ class Controller_V1_User extends Controller_V1_Base {
 				return $this->response($validate_result);
 			}
 			
-			// TODO: Check account existed
+			// Check account existed
 			if (User::is_existed(Input::post('username'))) {
 				// Set error message
 				$errors = array('message' => 'This username is already in used.');
@@ -50,7 +51,7 @@ class Controller_V1_User extends Controller_V1_Base {
 				);
 			}
 			
-			// TODO: Insert new account
+			// Insert new account
 			$user_id = User::create_acount(
 					array(
 							'username' => Input::post('username'),
@@ -87,11 +88,11 @@ class Controller_V1_User extends Controller_V1_Base {
 
 			// Set rules for input fields
 			$val->add_field('username', 'Username', 'required|trim|valid_string[alpha,lowercase,numeric]|min_length[4]|max_length[40]');
-			$val->add_field('password', 'Password', 'required|trim|valid_string[alpha,lowercase,numeric]');
-			$val->add_field('firstname', 'First name', 'required');
-			$val->add_field('lastname', 'Last name', 'required');
-			$val->add_field('email', 'Email', 'required|trim|valid_email');
-			
+			$val->add_field('password', 'Password', 'required|trim|valid_string[alpha,lowercase,numeric]|max_length[40]');
+			$val->add_field('firstname', 'First name', 'required|max_length[40]');
+			$val->add_field('lastname', 'Last name', 'required|max_length[40]');
+			$val->add_field('email', 'Email', 'required|trim|valid_email|max_length[255]');
+
 			// Overwrite the default rule error messages
 			$val->set_message('required', _DATA_REQUIRED_MSG_);
 			$val->set_message('valid_string', _DATA_INVALID_MSG_.' Only lowercase alphanumeric is accepted.');
@@ -121,8 +122,8 @@ class Controller_V1_User extends Controller_V1_Base {
 			// Validated OK
 			return true;
 		} catch (Exception $e) {
-			//Write log here
-			
+			//Write log
+			Ultility_Log::log(Fuel::L_ERROR, $e, $method = "validate_input()");
 			// Return error info to response
 			return parent::get_system_error_response();
 		}
