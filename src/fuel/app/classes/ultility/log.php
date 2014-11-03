@@ -20,16 +20,22 @@ class Ultility_Log {
      * @param Exception $ex Exception object
      * @param string $method Called function name
      */
-    public static function log($level, $ex, $function = null) {
-    	// Build up log message
-    	$message = '';
-    	$message .= $ex->getFile();    	
-    	$message .= ' ';
-    	$message .= $ex->getLine();
-    	$message .= ' ';
-    	$message .= $ex->getMessage();
-    	$message .= ' ';
-//     	$message .= $ex->getTraceAsString();
+    public static function log($level, $input = array(), $function = null) {
+    	// In case of an exception
+    	if (!is_array($input)) {
+    		// Build up log message
+    		$message = '';
+    		$message .= $input->getFile();
+    		$message .= ' ';
+    		$message .= $input->getLine();
+    		$message .= ' ';
+    		$message .= $input->getMessage();
+    		$message .= ' ';
+    		// $message .= $ex->getTraceAsString();
+    	// In case of an messages array
+    	} else {
+    		$message = $input[0];
+    	}
     	
     	// Write to file
     	switch ($level) {

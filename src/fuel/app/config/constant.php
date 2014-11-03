@@ -9,6 +9,10 @@
  * 
  */
 
+// ### Common Constants ###
+// Secrete key
+define('_ENCRYPT_SECRETE_KEY_', 'mulodo_mcs_key');
+
 // ### Error Codes ###
 // Input validation
 define('_VALIDATE_FAILED_CODE_', '1001');

@@ -3,6 +3,7 @@
 
 // use Fuel\Core\Controller_Rest;
 use \Model\V1\User;
+use \Model\V1\LoginSession;
 
 /**
  * The User Controller version v1.
@@ -50,6 +51,11 @@ class Controller_V1_User extends Controller_V1_Base {
 						'data' => null
 				);
 			}
+
+			// We need to be sure that login_session data is inserted only and
+			// only once user inserted successfully.
+			// Start transaction
+			DB::start_transaction();
 			
 			// Insert new account
 			$user_id = User::create_acount(
@@ -62,15 +68,35 @@ class Controller_V1_User extends Controller_V1_Base {
 					)
 			);
 			
-			// TODO: Create token
-			// TODO: Update token to user table
+			// Create token (do login)
+			// Crypt string "secrectkey@access_id@user_id@Date(UNIX TIME)" to create token
+			$token = _ENCRYPT_SECRETE_KEY_."@access_id@$user_id@".time();
+			$cipher = new Ultility_Cipher(_ENCRYPT_SECRETE_KEY_);
+			$encrypt_token = $cipher->encrypt($token);
+			
+			// Insert new login session login_session table
+			$session_id = LoginSession::create_login_session(
+					array(
+							'user_id' => $user_id,
+							'access_token' => $encrypt_token
+					)
+			);
+
+			// Commit transaction
+			DB::commit_transaction();
+			
+			// Get created access token
+			$access_token = LoginSession::get_access_token($session_id);
 			
 			// Return created user id (record id)
-			return $this->response(array('user_id' => null));
+			return $this->response(array('access_token' => $access_token));
 			
 		} catch (Exception $e) {
-			//Write log here
-				
+			// Rollback pending transactional queries
+			DB::rollback_transaction();
+			
+			//Write log
+			Ultility_Log::log(Fuel::L_ERROR, $e, $method = "post_create()");
 			// Return error info to response
 			return parent::get_system_error_response();
 		}

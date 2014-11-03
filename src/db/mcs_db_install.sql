@@ -61,7 +61,18 @@ CREATE TABLE IF NOT EXISTS `x_user_article` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
-
+--
+-- 'login_session' table structure
+--
+CREATE TABLE IF NOT EXISTS `login_session` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_id` INT(11) NOT NULL,
+  `access_token` VARCHAR(255) NULL,
+  `last_login_dt` INT(11) NULL,
+  `create_dt` INT(11) NOT NULL,
+  `update_dt` INT(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 --
 -- Master tables
@@ -75,3 +86,8 @@ ALTER TABLE `x_user_article`
   ADD CONSTRAINT `x_user_article_fk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   ADD CONSTRAINT `x_user_article_fk_2` FOREIGN KEY (`article_id`) REFERENCES `article` (`id`);
 
+--
+-- 'login_session' table constrain
+--
+ALTER TABLE `login_session`
+  ADD CONSTRAINT `login_session` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
