@@ -24,8 +24,6 @@ CREATE TABLE IF NOT EXISTS `user` (
   `firstname` VARCHAR(40) NOT NULL,
   `lastname` VARCHAR(40) NOT NULL,
   `email` VARCHAR(255) NOT NULL,
-  `access_token` VARCHAR(40) NULL,
-  `last_login_dt` INT(11) NULL,
   `create_dt` INT(11) NOT NULL,
   `update_dt` INT(11) NOT NULL,
   `status` TINYINT(1) NOT NULL DEFAULT 1,
