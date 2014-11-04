@@ -14,18 +14,19 @@ class Ultility_Common {
     }
 
     /**
+     * Decrypt and parse encrypted token to items in array format.
      * 
-     * @param unknown $token
-     * @return NULL|unknown
+     * @param String $encrypt_token Encrypted token to be parsed
+     * @return NULL|Array Parsed items in array format
      */
-    public static function parse_token($token) {
-    	if (!$token) {
+    public static function parse_token($encrypt_token) {
+    	if (!$encrypt_token) {
     		return null;
     	}
 		// Create new cipher object
     	$cipher = new Ultility_Cipher(_ENCRYPT_SECRETE_KEY_);
     	// Decrypt the token
-    	$decrypt_token = $cipher->decrypt($token);
+    	$decrypt_token = $cipher->decrypt($encrypt_token);
     	// Parse the token to get data
     	$token_items = explode('@', $decrypt_token);
     	
