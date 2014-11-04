@@ -36,7 +36,8 @@ class User extends Model {
 			return (DB::count_last_query() > 0) ? true : false;
 			
 		} catch (Exception $e) {
-			// Write log here
+			//Write log
+			Ultility_Log::log(Fuel::L_ERROR, $e, $method = "is_existed()");
 		}
 	}
 	
@@ -80,9 +81,61 @@ class User extends Model {
 			// Return new record's id
 			return $result[0];
 		} catch (Exception $e) {
-			// Write log here
+			//Write log
+			Ultility_Log::log(Fuel::L_ERROR, $e, $method = "create_acount()");
 		}
 	}
 
+	/**
+	 * Get user account info.
+	 * 
+	 * @param int $user_id User ID (system id)
+	 * @return array User account info in array format
+	 */
+	public static function get_user_info($user_id) {
+		try {
+			// Prepare an insert statement
+			$query = DB::query('SELECT * FROM user WHERE id = :user_id AND status = 1', DB::SELECT);
+		
+			// Bind the variable
+			$query->bind('user_id', $user_id);
+		
+			// Execute the query and return a new Database_MySQLi_Result
+			$result = $query->execute();
+				
+			// Return check result
+			return $result[0];
+				
+		} catch (Exception $e) {
+			//Write log
+			Ultility_Log::log(Fuel::L_ERROR, $e, $method = "get_user_info()");
+		}	
+	}
 
+	/**
+	 * Remove user account info.
+	 * 
+	 * @param int $user_id User ID (system id)
+	 * @return boolean True id remove success. Otherwise, False.
+	 */
+	public static function remove_account($user_id) {
+		try {
+			// Prepare an insert statement
+			$query = DB::query('DELETE FROM user WHERE id = :user_id', DB::DELETE);
+	
+			// Bind the variable
+			$query->bind('user_id', $user_id);
+	
+			// Execute the query and return a new Database_MySQLi_Result
+			$result = $query->execute();
+				
+			// Return check result
+			return ($result == 1) ? true : false;
+				
+		} catch (Exception $e) {
+			//Write log
+			Ultility_Log::log(Fuel::L_ERROR, $e, $method = "remove_account()");
+		}
+	}
+	
 }
