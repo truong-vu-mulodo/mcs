@@ -1,7 +1,6 @@
 <?php
 // namespace Controller;
 
-// use Fuel\Core\Controller_Rest;
 use \Model\V1\User;
 use \Model\V1\LoginSession;
 
@@ -52,8 +51,8 @@ class Controller_V1_User extends Controller_V1_Base {
 				);
 			}
 
-			// We need to be sure that login_session data is inserted only and
-			// only once user inserted successfully.
+			// IMPORTANT: We need to be sure that login_session data is inserted only and
+			// only once user data was inserted successfully.
 			// Start transaction
 			DB::start_transaction();
 			
@@ -61,7 +60,7 @@ class Controller_V1_User extends Controller_V1_Base {
 			$user_id = User::create_acount(
 					array(
 							'username' => Input::post('username'),
-							'password' => Input::post('password'),
+							'password' => md5(Input::post('password')),
 							'firstname' => Input::post('firstname'),
 							'lastname' => Input::post('lastname'),
 							'email' => Input::post('email')
@@ -73,7 +72,7 @@ class Controller_V1_User extends Controller_V1_Base {
 			$token = _ENCRYPT_SECRETE_KEY_."@access_id@$user_id@".time();
 			$cipher = new Ultility_Cipher(_ENCRYPT_SECRETE_KEY_);
 			$encrypt_token = $cipher->encrypt($token);
-			
+
 			// Insert new login session login_session table
 			$session_id = LoginSession::create_login_session(
 					array(
@@ -101,7 +100,7 @@ class Controller_V1_User extends Controller_V1_Base {
 			return parent::get_system_error_response();
 		}
 	}
-	
+
 	/**
 	 * Validate input data.
 	 * 

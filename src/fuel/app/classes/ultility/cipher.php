@@ -29,10 +29,12 @@ class Ultility_Cipher {
     /**
      * Decrypt data.
      * 
+     * Use rtrim to remove trail NULL characters (padding).
+     * 
      * @param String $input  Data need to be decrypted
      */
     public function decrypt($input) {
-    	return mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $this->secure_key, base64_decode($input), MCRYPT_MODE_ECB, $this->iv);
+    	return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $this->secure_key, base64_decode($input), MCRYPT_MODE_ECB, $this->iv));
     }
 
 }
