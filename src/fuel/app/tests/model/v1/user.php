@@ -15,7 +15,7 @@ class Test_Model_V1_User extends TestCase {
 	
 	private $user;
 	
-	private $created_user_id;
+	private $created_user_id = null;
 	
 	/**
 	 * Init test resource.
@@ -53,7 +53,7 @@ class Test_Model_V1_User extends TestCase {
 		$this->assertEquals('Vu', $created_user['firstname']);
 		$this->assertEquals('Truong', $created_user['lastname']);
 		$this->assertEquals('truong.vu@mulodo.com', $created_user['email']);
-		
+		// Reserve the id for cleanup resource
 		$this->created_user_id = $user_id;
 	}
 
@@ -63,7 +63,7 @@ class Test_Model_V1_User extends TestCase {
 	 * @return array Test data
 	 */
 	public function init_data() {
-
+// 		return new CsvFileIterator('data.csv');
 		$test_data = array();
 		
 		for ($i = 0; $i < 1; $i++) {
