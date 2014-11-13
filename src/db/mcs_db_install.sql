@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS `user` (
   `create_dt` INT(11) NOT NULL,
   `update_dt` INT(11) NOT NULL,
   `status` TINYINT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username_uk` (`username`)
+  PRIMARY KEY (`id`)
+--  UNIQUE KEY `username_uk` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 --
