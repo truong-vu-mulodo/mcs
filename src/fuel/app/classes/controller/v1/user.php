@@ -44,7 +44,7 @@ class Controller_V1_User extends Controller_V1_Base {
 				return array(
 						'meta' => array(
 								'code' => _USERNAME_EXISTED_CODE_,
-								'description' => "Account existed.",
+								'description' => _ACCOUNT_EXISTED_MSG_,
 								'messages' => $errors
 						),
 						'data' => null
@@ -87,8 +87,17 @@ class Controller_V1_User extends Controller_V1_Base {
 			// Get created access token
 			$access_token = LoginSession::get_access_token($session_id);
 			
-			// Return created user id (record id)
-			return $this->response(array('access_token' => $access_token));
+			// Return created user info
+			return $this->response(
+						array(
+							'meta' => array(
+									'code' => _API_CALL_SUCCESS_CODE_,
+									'description' => _USER_CREATED_SUCCESS_MSG_,
+									'messages' => $errors
+							),
+							'data' => array('access_token' => $access_token)
+						)
+					);
 			
 		} catch (Exception $e) {
 			// Rollback pending transactional queries
