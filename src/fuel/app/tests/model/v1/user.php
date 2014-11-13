@@ -32,6 +32,63 @@ class Test_Model_V1_User extends TestCase {
 		$this->user->remove_account($this->created_user_id);
 		unset($this->user);
 	}
+
+	/**
+	 * Check if a username existed.
+	 * Case: OK
+	 *
+	 * @test
+	 */
+	public function is_existed_ok($username = 'vutm') {
+		// Check user account existed
+		$user_existed = $this->user->is_existed($username);
+		
+		// Compare result
+		$this->assertTrue($user_existed);
+	}
+
+	/**
+	 * Check if a username existed.
+	 * Case: FAILURE
+	 * @test
+	 */
+	public function is_existed_failure($username = 'not_existed_username') {
+		// Check user account existed
+		$user_existed = $this->user->is_existed($username);
+	
+		// Compare result
+		$this->assertFalse($user_existed);
+	}
+	
+	/**
+	 * Get user info.
+	 *
+	 * @test
+	 */
+	public function get_user_info_ok($user_id = 2) {
+		// Get user account
+		$user_info = $this->user->get_user_info($user_id);
+
+		// Compare each value
+		$this->assertNotNull($user_info['id']);
+		$this->assertNotNull($user_info['username']);
+		$this->assertNotNull($user_info['password']);
+		$this->assertNotNull($user_info['firstname']);
+		$this->assertNotNull($user_info['lastname']);
+		$this->assertNotNull($user_info['email']);
+	}
+	
+	/**
+	 * Get user info failure.
+	 *
+	 * @test
+	 */
+	public function get_user_info_failure($user_id = 1001) {
+		// Create account
+		$user_info = $this->user->get_user_info($user_id);
+		// Compare count
+		$this->assertEquals(0, count($user_info));
+	}
 	
 	/**
 	 * Create user account.
@@ -40,8 +97,8 @@ class Test_Model_V1_User extends TestCase {
 	 * @test
 	 * @dataProvider init_data
 	 */
-	public function create_acount($user_info) {
-		// Create account			
+	public function create_acount_ok($user_info) {
+		// Create account
 		$user_id = $this->user->create_acount($user_info);
 		// Create success
 		$this->assertGreaterThan(0, $user_id);
@@ -77,4 +134,7 @@ class Test_Model_V1_User extends TestCase {
 		}
 		return $test_data;
 	}
+	
+	
+	
 }
