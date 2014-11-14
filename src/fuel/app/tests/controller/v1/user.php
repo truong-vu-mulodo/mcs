@@ -90,8 +90,96 @@ class Test_Controller_V1_User extends TestCase {
 				'lastname' => 'Truong',
 				'email' => 'truong.vu@mulodo.com'
 		);
+
+		// Null password
+		$test_data[][] = array(
+				'username' => 'vutm',
+				'password' => '',
+				'firstname' => 'Vu',
+				'lastname' => 'Truong',
+				'email' => 'truong.vu@mulodo.com'
+		);
+
+		// Lenght > 40 password
+		$test_data[][] = array(
+				'username' => 'vutm',
+				'password' => '1234567890123456789012345678901234567890_41',
+				'firstname' => 'Vu',
+				'lastname' => 'Truong',
+				'email' => 'truong.vu@mulodo.com'
+		);
+
+		// Not "alphanumeric" password
+		$test_data[][] = array(
+				'username' => 'vutm',
+				'password' => 'mypass*&',
+				'firstname' => 'Vu',
+				'lastname' => 'Truong',
+				'email' => 'truong.vu@mulodo.com'
+		);
+
+		// Null firstname
+		$test_data[][] = array(
+				'username' => 'vutm',
+				'password' => 'mypass',
+				'firstname' => '',
+				'lastname' => 'Truong',
+				'email' => 'truong.vu@mulodo.com'
+		);
 		
-		// To be continued..
+		// Lenght > 40 firstname
+		$test_data[][] = array(
+				'username' => 'vutm',
+				'password' => 'mypass',
+				'firstname' => '1234567890123456789012345678901234567890_41',
+				'lastname' => 'Truong',
+				'email' => 'truong.vu@mulodo.com'
+		);
+
+		// Null lastname
+		$test_data[][] = array(
+				'username' => 'vutm',
+				'password' => 'mypass',
+				'firstname' => 'Vu',
+				'lastname' => '',
+				'email' => 'truong.vu@mulodo.com'
+		);
+		
+		// Lenght > 40 lastname
+		$test_data[][] = array(
+				'username' => 'vutm',
+				'password' => 'mypass',
+				'firstname' => 'Vu',
+				'lastname' => '1234567890123456789012345678901234567890_41',
+				'email' => 'truong.vu@mulodo.com'
+		);
+
+		// Null email
+		$test_data[][] = array(
+				'username' => 'vutm',
+				'password' => 'mypass',
+				'firstname' => 'Vu',
+				'lastname' => 'Truong',
+				'email' => ''
+		);
+		
+		// Lenght > 255 email
+		$test_data[][] = array(
+				'username' => 'vutm',
+				'password' => 'mypass',
+				'firstname' => 'Vu',
+				'lastname' => 'Truong',
+				'email' => '123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890_300'
+		);
+
+		// Invalid email
+		$test_data[][] = array(
+				'username' => 'vutm',
+				'password' => 'mypass',
+				'firstname' => 'Vu',
+				'lastname' => 'Truong',
+				'email' => 'truong.vumulodo.com'
+		);
 		
 		return $test_data;
 	}
