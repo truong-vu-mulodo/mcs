@@ -58,7 +58,7 @@ class Test_Controller_V1_User extends TestCase {
 		$test_data = array();
 		// Null username
 		$test_data[][] = array(
-				'username' => 'ae',
+				'username' => '',
 				'password' => 'pass',
 				'firstname' => 'Vu',
 				'lastname' => 'Truong',
