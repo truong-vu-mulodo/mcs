@@ -99,6 +99,15 @@ class Controller_V1_User extends Controller_V1_Base {
 						)
 					);
 			
+		} catch (Database_Exception $e) {
+			// Rollback pending transactional queries
+			DB::rollback_transaction();
+			
+			//Write log
+			Ultility_Log::log(Fuel::L_ERROR, $e, $method = "post_create()");
+			// Return error info to response
+			return parent::get_error_response(_DATABASE_ERROR_TYPE_);
+			
 		} catch (Exception $e) {
 			// Rollback pending transactional queries
 			DB::rollback_transaction();
@@ -106,7 +115,7 @@ class Controller_V1_User extends Controller_V1_Base {
 			//Write log
 			Ultility_Log::log(Fuel::L_ERROR, $e, $method = "post_create()");
 			// Return error info to response
-			return parent::get_system_error_response();
+			return parent::get_error_response(_SYSTEM_ERROR_TYPE_);
 		}
 	}
 }

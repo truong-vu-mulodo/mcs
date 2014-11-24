@@ -20,11 +20,9 @@ define('_API_CALL_SUCCESS_CODE_', '200');
 // Input validation
 define('_VALIDATE_FAILED_CODE_', '1001');
 
-// Data exist
-define('_USERNAME_EXISTED_CODE_', '2001');
-
 // Common errors
-define('_SYSTEM_ERROR_CODE_', '9001');
+define('_SYSTEM_ERROR_TYPE_', 'SYSTEM_ERROR');
+define('_DATABASE_ERROR_TYPE_', 'DATABASE_ERROR');
 
 // ### Error Messages ###
 // Validation error messages
@@ -34,6 +32,12 @@ define('_DATA_INVALID_MSG_', ':label is invalid.');
 // Normal messages
 define('_USER_CREATED_SUCCESS_MSG_', 'User account created successfully!');
 
-// Error messages
+// Error codes & messages
+define('_SYSTEM_ERROR_CODE_', '9001');
 define('_SYSTEM_ERROR_MSG_', 'System error occured. Please contact administrator.');
+
+define('_DATABASE_ERROR_MSG_', 'Database error occured. Please contact administrator.');
+define('_DATABASE_ERROR_CODE_', '9002');
+
+define('_USERNAME_EXISTED_CODE_', '2001');
 define('_ACCOUNT_EXISTED_MSG_', 'Account existed.');

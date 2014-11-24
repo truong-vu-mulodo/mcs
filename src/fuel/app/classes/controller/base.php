@@ -21,13 +21,34 @@ class Controller_Base extends Controller_Rest {
 	 *
 	 * @return array Error content for response
 	 */
-	protected function get_system_error_response() {
+	protected function get_error_response($error_type = _SYSTEM_ERROR_TYPE_) {
+		// Default info
+		$error_code = _SYSTEM_ERROR_CODE_;
+		$error_msg = _SYSTEM_ERROR_MSG_;
+		
+		switch ($error_type) {
+			// System error
+			case _SYSTEM_ERROR_TYPE_: {
+				$error_code = _SYSTEM_ERROR_CODE_;
+				$error_msg = _SYSTEM_ERROR_MSG_;
+				break;
+			}
+			// Database error
+			case _DATABASE_ERROR_TYPE_: {
+				$error_code = _DATABASE_ERROR_CODE_;
+				$error_msg = _DATABASE_ERROR_MSG_;
+				break;
+			}
+
+			default;
+		}
+		
 		// Return error info by array format
 		return array(
 				'meta' => array(
-						'code' => _SYSTEM_ERROR_CODE_,
+						'code' => $error_code,
 						'description' => "System error.",
-						'messages' => array('message' => _SYSTEM_ERROR_MSG_)
+						'messages' => array('message' => $error_msg)
 				),
 				'data' => null
 		);

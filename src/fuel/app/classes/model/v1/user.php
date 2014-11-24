@@ -101,6 +101,7 @@ class User extends Model {
 	 */
 	public static function create_acount($user_info) {
 		try {
+
 			// Prepare an insert statement
 			$query = DB::insert('user');
 			
@@ -131,9 +132,9 @@ class User extends Model {
 
 			// Return new record's id
 			return $result[0];
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			//Write log
-			Ultility_Log::log(Fuel::L_ERROR, $e, $method = "create_acount()");
+			\Ultility_Log::log(\Fuel::L_ERROR, $e, $method = "create_acount()");
 		}
 	}
 
