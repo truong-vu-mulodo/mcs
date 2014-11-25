@@ -13,6 +13,8 @@ use \Model\V1\User;
  */
 class Test_Model_V1_User extends TestCase {
 	
+	const _UNEXISTED_USER_ID_ = 1001;
+	
 	protected static $user;
 	
 	/**
@@ -156,9 +158,9 @@ class Test_Model_V1_User extends TestCase {
 	 *
 	 * @test
 	 */
-	public function get_user_info_failure($user_id = 1001) {
+	public function get_user_info_failure() {
 		// Create account
-		$user_info = self::$user->get_user_info($user_id);
+		$user_info = self::$user->get_user_info(self::_UNEXISTED_USER_ID_);
 		// Compare count
 		$this->assertEquals(0, count($user_info));
 	}
