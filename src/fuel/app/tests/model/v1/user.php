@@ -13,36 +13,108 @@ use \Model\V1\User;
  */
 class Test_Model_V1_User extends TestCase {
 	
-	private $user;
-	
-	private $created_user_id = null;
+	protected static $user;
 	
 	/**
-	 * Init test resource.
+	 * Init test resource (FUNCTION LEVEL).
 	 */
 	protected function setUp() {
-		$this->user = new User();
 	}
 	
 	/**
-	 * Cleanup test resource.
+	 * Cleanup test resource (FUNCTION LEVEL).
 	 */
 	protected function tearDown() {
-		// Remove test data
-		$this->user->remove_account($this->created_user_id);
-		unset($this->user);
 	}
 
+	/**
+	 * Init test resource (CLASS LEVEL).
+	 */
+	public static function setUpBeforeClass() {
+		self::$user = new User();
+	}
+
+	/**
+	 * Cleanup test resource (CLASS LEVEL).
+	 */
+	public static function tearDownAfterClass() {
+		global $user;
+		unset($user);
+	}
+
+	/**
+	 * Define test data set
+	 *
+	 * @return array Test data
+	 */
+	public function init_data() {
+		// Read from external file
+		// 		return new CsvFileIterator('data.csv');
+	
+		// Or create directly
+		$test_data = array();
+	
+		for ($i = 0; $i < 1; $i++) {
+			$test_data[][] = array(
+					'username' => 'vutm',
+					'password' => md5('mypass'),
+					'firstname' => 'Vu',
+					'lastname' => 'Truong',
+					'email' => 'truong.vu@mulodo.com'
+			);
+		}
+		return $test_data;
+	}
+
+	/**
+	 * Create user account.
+	 * This will insert new record into "user" table from provided information.
+	 * 
+	 * Intended to use data provider but this function's depending function can not inject any return value.
+	 *
+	 * @test
+	 */
+	public function create_acount_ok() {
+		// Test data
+		$user_info = array(
+						'username' => 'vutm',
+						'password' => md5('mypass'),
+						'firstname' => 'Vu',
+						'lastname' => 'Truong',
+						'email' => 'truong.vu@mulodo.com'
+					);
+		
+		// Create account
+		$user_id = self::$user->create_acount($user_info);
+		// Create success
+		$this->assertGreaterThan(0, $user_id);
+		// Get user account has just created
+		$created_user = self::$user->get_user_info($user_id);
+		// Compare each value
+		$this->assertEquals('vutm', $created_user['username']);
+		$this->assertEquals(md5('mypass'), $created_user['password']);
+		$this->assertEquals('Vu', $created_user['firstname']);
+		$this->assertEquals('Truong', $created_user['lastname']);
+		$this->assertEquals('truong.vu@mulodo.com', $created_user['email']);
+
+		// Add insert id
+		$user_info['user_id'] = $user_id;
+
+		return $user_info;
+	}
+	
 	/**
 	 * Check if a username existed.
 	 * Case: OK
 	 *
 	 * @test
+	 * @depends create_acount_ok
 	 */
-	public function is_existed_ok($username = 'vutm') {
+	public function is_existed_ok($user_info) {
+
 		// Check user account existed
-		$user_existed = $this->user->is_existed($username);
-		
+		$user_existed = self::$user->is_existed($user_info['username']);
+
 		// Compare result
 		$this->assertTrue($user_existed);
 	}
@@ -54,7 +126,7 @@ class Test_Model_V1_User extends TestCase {
 	 */
 	public function is_existed_failure($username = 'not_existed_username') {
 		// Check user account existed
-		$user_existed = $this->user->is_existed($username);
+		$user_existed = self::$user->is_existed($username);
 	
 		// Compare result
 		$this->assertFalse($user_existed);
@@ -64,10 +136,11 @@ class Test_Model_V1_User extends TestCase {
 	 * Get user info.
 	 *
 	 * @test
+	 * @depends create_acount_ok
 	 */
-	public function get_user_info_ok($user_id = 2) {
+	public function get_user_info_ok($user_info) {
 		// Get user account
-		$user_info = $this->user->get_user_info($user_id);
+		$user_info = self::$user->get_user_info($user_info['user_id']);
 
 		// Compare each value
 		$this->assertNotNull($user_info['id']);
@@ -77,7 +150,7 @@ class Test_Model_V1_User extends TestCase {
 		$this->assertNotNull($user_info['lastname']);
 		$this->assertNotNull($user_info['email']);
 	}
-	
+
 	/**
 	 * Get user info failure.
 	 *
@@ -85,56 +158,21 @@ class Test_Model_V1_User extends TestCase {
 	 */
 	public function get_user_info_failure($user_id = 1001) {
 		// Create account
-		$user_info = $this->user->get_user_info($user_id);
+		$user_info = self::$user->get_user_info($user_id);
 		// Compare count
 		$this->assertEquals(0, count($user_info));
 	}
-	
-	/**
-	 * Create user account.
-	 * This will insert new record into "user" table from provided information.
-	 * 
-	 * @test
-	 * @dataProvider init_data
-	 */
-	public function create_acount_ok($user_info) {
-		// Create account
-		$user_id = $this->user->create_acount($user_info);
-		// Create success
-		$this->assertGreaterThan(0, $user_id);
-		// Get user account has just created
-		$created_user = $this->user->get_user_info($user_id);
-		// Compare each value
-		$this->assertEquals('vutm', $created_user['username']);
-		$this->assertEquals(md5('mypass'), $created_user['password']);
-		$this->assertEquals('Vu', $created_user['firstname']);
-		$this->assertEquals('Truong', $created_user['lastname']);
-		$this->assertEquals('truong.vu@mulodo.com', $created_user['email']);
-		// Reserve the id for cleanup resource
-		$this->created_user_id = $user_id;
-	}
 
 	/**
-	 * Define test data set
-	 * 
-	 * @return array Test data
+	 * Remove user account.
+	 *
+	 * @test
+	 * @depends create_acount_ok
 	 */
-	public function init_data() {
-// 		return new CsvFileIterator('data.csv');
-		$test_data = array();
-		
-		for ($i = 0; $i < 1; $i++) {
-			$test_data[][] = array(
-				'username' => 'vutm',
-				'password' => md5('mypass'),
-				'firstname' => 'Vu',
-				'lastname' => 'Truong',
-				'email' => 'truong.vu@mulodo.com'
-			);
-		}
-		return $test_data;
+	public function remove_acount_ok($user_info) {	
+		// Remove account
+		$result = self::$user->remove_account($user_info['user_id']);
+
+		$this->assertTrue($result);
 	}
-	
-	
-	
 }
