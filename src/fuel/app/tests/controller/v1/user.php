@@ -25,36 +25,13 @@ class Test_Controller_V1_User extends TestCase {
 	protected function tearDown() {
 		// Remove test data
 	}
-	
-	/**
-	 * Post (create) user account.
-	 * 
-	 * @test
-	 * @dataProvider init_data
-	 */
-	public function post_create_validate_failure($post_params) {
-		// create a Request_Curl object
-		$curl = Request::forge('http://localhost/mcs/public/v1/users.json', 'curl');
-		// this is going to be an HTTP POST
-		$curl->set_method('POST');
-		// set some parameters
-		$curl->set_params($post_params);		
-		// execute the request
-		$curl->execute();
-		// Get response object
-		$result = $curl->response();
-		// Get response body
-		$resp_body = json_decode($result->body(), true);
-		// Compare result		
-		$this->assertEquals(1001, $resp_body['meta']['code']);
-	}
 
 	/**
-	 * Define test data set
+	 * Define test data set for input validation test
 	 * 
 	 * @return array Test data
 	 */
-	public function init_data() {
+	public function create_invalid_data() {
 		$test_data = array();
 		// Null username
 		$test_data[][] = array(
@@ -182,5 +159,94 @@ class Test_Controller_V1_User extends TestCase {
 		);
 		
 		return $test_data;
+	}
+	
+	/**
+	 * Post (create) user account input validation.
+	 * Case: FAILURE
+	 *
+	 * @test
+	 * @dataProvider create_invalid_data
+	 */
+	public function post_create_validate_failure($post_params) {
+		// create a Request_Curl object
+		$curl = Request::forge('http://localhost/mcs/public/v1/users.json', 'curl');
+		// this is going to be an HTTP POST
+		$curl->set_method('POST');
+		// set some parameters
+		$curl->set_params($post_params);
+		// execute the request
+		$curl->execute();
+		// Get response object
+		$result = $curl->response();
+		// Get response body
+		$resp_body = json_decode($result->body(), true);
+		// Compare result
+		$this->assertEquals(_VALIDATE_FAILED_CODE_, $resp_body['meta']['code']);
+	}
+
+	/**
+	 * Post (create) user account success.
+	 *
+	 * @test
+	 */
+	public function post_create_ok() {
+		// POST parameters
+		$post_params = array(
+				'username' => 'vutm'.uniqid(),
+				'password' => 'pass',
+				'firstname' => 'Vu',
+				'lastname' => 'Truong',
+				'email' => 'truong.vu@mulodo.com'
+		);
+
+		// create a Request_Curl object
+		$curl = Request::forge('http://localhost/mcs/public/v1/users.json', 'curl');
+		// this is going to be an HTTP POST
+		$curl->set_method('POST');
+		// set some parameters
+		$curl->set_params($post_params);
+		// execute the request
+		$curl->execute();
+		// Get response object
+		$result = $curl->response();
+		// Get response body
+		$resp_body = json_decode($result->body(), true);
+		// Compare result
+		$this->assertEquals(_API_CALL_SUCCESS_CODE_, $resp_body['meta']['code']);
+		return $resp_body['data'];
+	}
+
+	/**
+	 * Post (create) user account.
+	 * Case: User existed
+	 *
+	 * @test
+	 * @depends post_create_ok
+	 */
+	public function post_create_user_existed($user_info) {
+		// POST parameters
+		$post_params = array(
+				'username' => $user_info['username'],
+				'password' => 'pass',
+				'firstname' => 'Vu',
+				'lastname' => 'Truong',
+				'email' => 'truong.vu@mulodo.com'
+		);
+	
+		// create a Request_Curl object
+		$curl = Request::forge('http://localhost/mcs/public/v1/users.json', 'curl');
+		// this is going to be an HTTP POST
+		$curl->set_method('POST');
+		// set some parameters
+		$curl->set_params($post_params);
+		// execute the request
+		$curl->execute();
+		// Get response object
+		$result = $curl->response();
+		// Get response body
+		$resp_body = json_decode($result->body(), true);
+		// Compare result
+		$this->assertEquals(_USERNAME_EXISTED_CODE_, $resp_body['meta']['code']);
 	}
 }
