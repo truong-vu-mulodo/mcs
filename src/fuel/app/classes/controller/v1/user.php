@@ -93,7 +93,7 @@ class Controller_V1_User extends Controller_V1_Base {
 							'meta' => array(
 									'code' => _API_CALL_SUCCESS_CODE_,
 									'description' => _USER_CREATED_SUCCESS_MSG_,
-									'messages' => $errors
+									'messages' => _USER_CREATED_SUCCESS_MSG_
 							),
 							'data' => array('access_token' => $access_token)
 						)
