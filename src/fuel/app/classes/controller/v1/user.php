@@ -87,6 +87,12 @@ class Controller_V1_User extends Controller_V1_Base {
 			// Get created access token
 			$access_token = LoginSession::get_access_token($session_id);
 			
+			// Get back created user info
+			$user_info = User::get_user_info($user_id);
+			
+			// Add access token
+			$user_info['access_token'] = $access_token;
+			
 			// Return created user info
 			return $this->response(
 						array(
@@ -95,7 +101,7 @@ class Controller_V1_User extends Controller_V1_Base {
 									'description' => _USER_CREATED_SUCCESS_MSG_,
 									'messages' => _USER_CREATED_SUCCESS_MSG_
 							),
-							'data' => array('access_token' => $access_token)
+							'data' => $user_info
 						)
 					);
 			
